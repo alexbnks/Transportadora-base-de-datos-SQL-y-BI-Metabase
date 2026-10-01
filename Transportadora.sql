@@ -1,6 +1,6 @@
 -- 1. Crear e indicar el uso de la base de datos
-CREATE DATABASE IF NOT EXISTS my_cabo_transfer;
-USE my_cabo_transfer;
+CREATE DATABASE IF NOT EXISTS transportadora_db;
+USE transportadora_db;
 
 -- 2. Categorías y capacidades de vehículos
 CREATE TABLE vehicle_types (
@@ -95,7 +95,7 @@ JOIN vehicle_types vt ON r.vehicle_type_id = vt.vehicle_type_id
 ORDER BY z.zone_id, vt.vehicle_type_id, r.trip_type;
 
 
-USE my_cabo_transfer;
+USE transportadora_db;
 
 -- 5. Clientes
 CREATE TABLE clients (
@@ -168,7 +168,7 @@ CREATE TABLE payments (
     FOREIGN KEY (reservation_id) REFERENCES reservations(reservation_id)
 );
 
-USE my_cabo_transfer;
+USE transportadora_db;
 
 -- 1. Insertar Choferes
 INSERT INTO drivers (full_name, phone, license_number, status) VALUES
@@ -192,16 +192,12 @@ INSERT INTO vehicles (vehicle_type_id, model, license_plate, status) VALUES
 (5, 'Cadillac Escalade ESV 2024', 'CBO-501-E', 'active');
 
 
-USE my_cabo_transfer;
+USE transportadora_db;
 
--- 1. Desactivar temporalmente revisiones y modo seguro
-SET FOREIGN_KEY_CHECKS = 0;
-SET SQL_SAFE_UPDATES = 0;
+-- 1. Añadir reservaciones
 
--- 2. Limpiar reservaciones previas
-DELETE FROM reservations;
 
--- 3. Inserción masiva de reservaciones de prueba
+-- 2. Inserción masiva de reservaciones de prueba
 INSERT INTO reservations 
 (booking_code, client_id, rate_id, vehicle_id, driver_id, passengers, pickup_datetime, airline, flight_number, hotel_destination, exchange_rate, total_usd, status)
 VALUES
@@ -226,14 +222,9 @@ VALUES
 ('MCT-2026-1019', 19, 5, 8, 4, 3, '2025-11-09 18:30:00', 'Volaris', 'Y4-881', 'Waldorf Astoria Pedregal', 17.50, 120.00, 'completed'),
 ('MCT-2026-1020', 20, 2, 4, 5, 6, '2025-11-10 10:15:00', 'Alaska Airlines', 'AS-405', 'Secrets Puerto Los Cabos', 17.50, 90.00, 'completed');
 
--- 4. Reactivar controles
-SET FOREIGN_KEY_CHECKS = 1;
-SET SQL_SAFE_UPDATES = 1;
 
 
-SELECT COUNT(*) AS total_reservaciones FROM reservations;
-SELECT * FROM reservations LIMIT 10;
-
+--1. Añadir clientes 
 
 INSERT IGNORE INTO clients (client_id, full_name, email, phone, country) VALUES
 (1, 'John Smith', 'john.smith@example.com', '+1 555-0101', 'USA'),
@@ -257,16 +248,10 @@ INSERT IGNORE INTO clients (client_id, full_name, email, phone, country) VALUES
 (19, 'Donald Lewis', 'dlewis@example.com', '+1 555-0119', 'USA'),
 (20, 'Sandra Lee', 'slee@example.com', '+1 555-0120', 'Canada');
 
-SELECT 
-    (SELECT COUNT(*) FROM clients) AS total_clientes,
-    (SELECT COUNT(*) FROM drivers) AS total_choferes,
-    (SELECT COUNT(*) FROM vehicles) AS total_vehiculos,
-    (SELECT COUNT(*) FROM rates) AS total_tarifas,
-    (SELECT COUNT(*) FROM reservations) AS total_reservaciones;
     
     
     
-    USE my_cabo_transfer;
+    USE transportadora_db;
 
 -- 1. Insertar 50 clientes adicionales (IDs del 21 al 70)
 INSERT IGNORE INTO clients (client_id, full_name, email, phone, country) VALUES
